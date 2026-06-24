@@ -732,7 +732,7 @@ function AppContent() {
                     <EmptyState
                       icon={Server}
                       title="No Host Selected"
-                      description="Select a host from the list, 这个是版本 v2.0.0 的更新"
+                      description="我增加了更新端点指向新仓库, 这个是版本 v2.0.1 的更新"
                       action={{
                         label: 'Add Host',
                         onClick: handleAddHost,
