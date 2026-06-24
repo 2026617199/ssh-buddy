@@ -550,7 +550,7 @@ function AppContent() {
                   className={cn(
                     'gap-3',
                     updateState === 'available' &&
-                      'text-yellow-600 dark:text-yellow-400'
+                    'text-yellow-600 dark:text-yellow-400'
                   )}
                 >
                   {updateState === 'available' ? (
@@ -732,7 +732,7 @@ function AppContent() {
                     <EmptyState
                       icon={Server}
                       title="No Host Selected"
-                      description="我增加了更新端点指向新仓库, 这个是版本 v2.0.1 的更新(现在修改版本为v2.1.0)"
+                      description="现在修改版本为v2.1.1，然后现在预期的效果是会创建release，但是不会被客户端感知到，然后等我上传到那边之后才会被感知到"
                       action={{
                         label: 'Add Host',
                         onClick: handleAddHost,
