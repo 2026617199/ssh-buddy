@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SSH Buddy",
-  "version": "0.1.9",
+  "version": "2.0.0",
   "identifier": "com.jkdh",
   "build": {
     "frontendDist": "../dist",
@@ -22,7 +22,8 @@
         "fullscreen": false,
         "transparent": false,
         "titleBarStyle": "Overlay",
-        "center": true
+        "center": true,
+        "devtools": true
       }
     ],
     "security": {

@@ -1,146 +1,41 @@
 name: Release
 
 on:
-  # Trigger after CI workflow completes successfully on a tag
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-  # Keep manual trigger option
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release (e.g., 0.1.0)'
-        required: false
-        type: string
-
-env:
-  CARGO_TERM_COLOR: always
 
 permissions:
   contents: write
 
 jobs:
-  generate-release-notes:
-    runs-on: ubuntu-latest
-    # Only run if: CI succeeded AND triggered by a tag, OR manual dispatch
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       startsWith(github.event.workflow_run.head_branch, 'v'))
-    outputs:
-      release_body: ${{ steps.notes.outputs.body }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          # For workflow_run, checkout the tag that triggered CI
-          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
-
-      - name: Generate release notes
-        id: notes
-        env:
-          WORKFLOW_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-        run: |
-          # Get the current tag (from workflow_run or direct push)
-          if [ -n "$WORKFLOW_HEAD_BRANCH" ]; then
-            CURRENT_TAG="$WORKFLOW_HEAD_BRANCH"
-          else
-            CURRENT_TAG=${GITHUB_REF#refs/tags/}
-          fi
-          LAST_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -1)
-
-          if [ -z "$LAST_TAG" ]; then
-            echo "body=Initial release" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Generate release notes
-          BODY=$(cat << 'HEREDOC'
-          ## What's Changed
-
-          HEREDOC
-          )
-
-          # Get commits and categorize
-          FEATURES=""
-          FIXES=""
-          DOCS=""
-          CHORES=""
-          REPO_URL="https://github.com/${{ github.repository }}"
-
-          while IFS='|' read -r hash subject; do
-            [ -z "$subject" ] && continue
-            SHORT_HASH="${hash:0:7}"
-            COMMIT_LINK="([${SHORT_HASH}](${REPO_URL}/commit/${hash}))"
-            if [[ "$subject" =~ ^feat ]]; then
-              msg=$(echo "$subject" | sed -E 's/^feat(\([^)]+\))?:\s*//' | sed 's/^ *//')
-              msg="$(echo "${msg:0:1}" | tr '[:lower:]' '[:upper:]')${msg:1}"
-              FEATURES="${FEATURES}- ${msg} ${COMMIT_LINK}\n"
-            elif [[ "$subject" =~ ^fix ]]; then
-              msg=$(echo "$subject" | sed -E 's/^fix(\([^)]+\))?:\s*//' | sed 's/^ *//')
-              msg="$(echo "${msg:0:1}" | tr '[:lower:]' '[:upper:]')${msg:1}"
-              FIXES="${FIXES}- ${msg} ${COMMIT_LINK}\n"
-            elif [[ "$subject" =~ ^docs ]]; then
-              msg=$(echo "$subject" | sed -E 's/^docs(\([^)]+\))?:\s*//' | sed 's/^ *//')
-              msg="$(echo "${msg:0:1}" | tr '[:lower:]' '[:upper:]')${msg:1}"
-              DOCS="${DOCS}- ${msg} ${COMMIT_LINK}\n"
-            elif [[ "$subject" =~ ^(chore|ci|build|refactor|perf|test|style) ]]; then
-              msg=$(echo "$subject" | sed -E 's/^(chore|ci|build|refactor|perf|test|style)(\([^)]+\))?:\s*//' | sed 's/^ *//')
-              msg="$(echo "${msg:0:1}" | tr '[:lower:]' '[:upper:]')${msg:1}"
-              CHORES="${CHORES}- ${msg} ${COMMIT_LINK}\n"
-            fi
-          done <<< "$(git log "$LAST_TAG"..HEAD --pretty=format:"%H|%s" --no-merges | grep -v "|release")"
-
-          BODY=""
-          [ -n "$FEATURES" ] && BODY="${BODY}### ✨ New Features\n\n${FEATURES}\n"
-          [ -n "$FIXES" ] && BODY="${BODY}### 🐛 Bug Fixes\n\n${FIXES}\n"
-          [ -n "$DOCS" ] && BODY="${BODY}### 📚 Documentation\n\n${DOCS}\n"
-          [ -n "$CHORES" ] && BODY="${BODY}### 🔧 Maintenance\n\n${CHORES}\n"
-
-          BODY="${BODY}---\n**Full Changelog**: https://github.com/${{ github.repository }}/compare/${LAST_TAG}...${CURRENT_TAG}"
-
-          # Use delimiter for multiline output
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$BODY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
   build-windows:
-    needs: generate-release-notes
     runs-on: windows-latest
     timeout-minutes: 60
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
         with:
           cache-targets: true
           cache-all-crates: true
           key: windows
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Build Tauri app
-        uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -148,7 +43,6 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: 'SSH Buddy v__VERSION__'
-          releaseBody: ${{ needs.generate-release-notes.outputs.release_body }}
           releaseDraft: false
           prerelease: false
 

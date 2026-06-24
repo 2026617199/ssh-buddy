@@ -1,6 +1,6 @@
 [package]
 name = "ssh-buddy"
-version = "0.1.9"
+version = "2.0.0"
 description = "SSH Buddy - A friendly SSH config and key manager"
 authors = ["2026617199 <https://github.com/2026617199/ssh-buddy>"]
 license = "MIT"

@@ -732,7 +732,7 @@ function AppContent() {
                     <EmptyState
                       icon={Server}
                       title="No Host Selected"
-                      description="Select a host from the list, or create a new host configuration."
+                      description="Select a host from the list, 这个是版本 v2.0.0 的更新"
                       action={{
                         label: 'Add Host',
                         onClick: handleAddHost,
