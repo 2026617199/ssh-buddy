@@ -111,4 +111,4 @@ if [ ${#OTHERS[@]} -gt 0 ]; then
 fi
 
 echo "---"
-echo "**Full Changelog**: https://github.com/runkids/ssh-buddy/compare/$LAST_TAG...$NEXT_VERSION"
+echo "**Full Changelog**: https://github.com/2026617199/ssh-buddy/compare/$LAST_TAG...$NEXT_VERSION"

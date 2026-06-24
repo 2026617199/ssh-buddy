@@ -2,9 +2,9 @@
 name = "ssh-buddy"
 version = "0.1.9"
 description = "SSH Buddy - A friendly SSH config and key manager"
-authors = ["runkids <https://github.com/runkids/ssh-buddy>"]
+authors = ["2026617199 <https://github.com/2026617199/ssh-buddy>"]
 license = "MIT"
-repository = "https://github.com/runkids/ssh-buddy"
+repository = "https://github.com/2026617199/ssh-buddy"
 edition = "2021"
 rust-version = "1.77.2"
 

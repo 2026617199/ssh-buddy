@@ -13,14 +13,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/runkids/ssh-buddy/releases">Download latest release</a>
+  <a href="https://github.com/2026617199/ssh-buddy/releases">Download latest release</a>
 </p>
 
 <p align="center">
-  <img alt="macOS" src="https://img.shields.io/badge/macOS-supported-1f2937">
   <img alt="Windows" src="https://img.shields.io/badge/Windows-supported-1f2937">
   <img alt="License" src="https://img.shields.io/badge/License-MIT-1f2937">
-  <img alt="Release" src="https://img.shields.io/github/v/release/runkids/ssh-buddy">
+  <img alt="Release" src="https://img.shields.io/github/v/release/2026617199/ssh-buddy">
 </p>
 
 ---
@@ -126,36 +125,9 @@ Connect to GitHub, GitLab, or Bitbucket in minutes with step-by-step guidance.
 
 ## 📦 Installation
 
-### macOS
-
-```bash
-# Install via Homebrew
-brew tap runkids/tap && brew install --cask ssh-buddy
-```
-
-Or download the latest `.dmg` from [Releases](https://github.com/runkids/ssh-buddy/releases) and drag to Applications.
-
-<details>
-<summary>Homebrew: Troubleshooting SHA256 mismatch errors</summary>
-
-If you encounter a SHA256 mismatch error during installation:
-
-```bash
-# Clear Homebrew's download cache and retry
-brew cleanup ssh-buddy
-brew install --cask ssh-buddy
-
-# Or force reinstall
-brew reinstall --cask ssh-buddy
-```
-
-This usually happens when Homebrew has a cached download from a previous version.
-
-</details>
-
 ### Windows
 
-Download the latest `.msi` from [Releases](https://github.com/runkids/ssh-buddy/releases) and run the installer.
+Download the latest `.msi` from [Releases](https://github.com/2026617199/ssh-buddy/releases) and run the installer.
 
 <details>
 <summary>Windows: Enable SSH Agent (required for full functionality)</summary>
@@ -193,7 +165,7 @@ pnpm tauri build    # Production build
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=runkids/ssh-buddy&type=Date)](https://star-history.com/#runkids/ssh-buddy&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=2026617199/ssh-buddy&type=Date)](https://star-history.com/#2026617199/ssh-buddy&Date)
 
 ---
 
