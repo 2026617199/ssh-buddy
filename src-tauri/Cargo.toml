@@ -1,0 +1,56 @@
+[package]
+name = "ssh-buddy"
+version = "0.1.9"
+description = "SSH Buddy - A friendly SSH config and key manager"
+authors = ["runkids <https://github.com/runkids/ssh-buddy>"]
+license = "MIT"
+repository = "https://github.com/runkids/ssh-buddy"
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "ssh_buddy_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5.3", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.9.5", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-os = "2"
+
+# SSH 操作相關依賴
+ssh-key = { version = "0.6", features = ["ed25519", "rsa", "p256", "p384", "std", "rand_core", "encryption"] }
+rsa = "0.9"
+tokio = { version = "1", features = ["fs", "io-util", "sync", "net", "time"] }
+thiserror = "1.0"
+dirs = "5"
+rand = "0.8"
+byteorder = "1.5"
+
+# SSH 連線測試
+russh = "0.46"
+russh-keys = "0.46"
+async-trait = "0.1"
+base64 = "0.22"
+
+# Windows support
+whoami = "1.5"
+
+# Platform-specific dependencies
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = ["Win32_Security", "Win32_System_Pipes", "Win32_Foundation", "Win32_Storage_FileSystem"] }
+
+[dev-dependencies]
+tempfile = "3"
+tokio-test = "0.4"
